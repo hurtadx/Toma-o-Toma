@@ -1,39 +1,49 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import CartasScreen from './screens/CartasScreen';
+import GameSelectionScreen from './screens/GameSelectionScreen';
+import HomeScreen from './screens/HomeScreen';
+import MonedaScreen from './screens/MonedaScreen';
+import RuletaScreen from './screens/RuletaScreen';
+import TemporizadorScreen from './screens/TemporizadorScreen';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [player, setPlayer] = useState('');
-  const [players, setPlayers] = useState([]);
-
-  const addPlayer = () => {
-    if (player.trim() !== '') {
-      setPlayers([...players, player.trim()]);
-      setPlayer('');
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Toma o Toma</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ingresa el nombre del jugador"
-        value={player}
-        onChangeText={setPlayer}
-      />
-      <Button title="Agregar jugador" onPress={addPlayer} />
-      <FlatList
-        data={players}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.player}>{item}</Text>}
-      />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ title: 'Toma o Toma' }}
+        />
+        <Stack.Screen 
+          name="GameSelection" 
+          component={GameSelectionScreen} 
+          options={{ title: 'Seleccionar Juego' }}
+        />
+        <Stack.Screen 
+          name="Ruleta" 
+          component={RuletaScreen} 
+          options={{ title: 'Ruleta' }}
+        />
+        <Stack.Screen 
+          name="Temporizador" 
+          component={TemporizadorScreen} 
+          options={{ title: 'Temporizador' }}
+        />
+        <Stack.Screen 
+          name="Cartas" 
+          component={CartasScreen} 
+          options={{ title: 'Tome y Sufra' }}
+        />
+        <Stack.Screen 
+          name="Moneda" 
+          component={MonedaScreen} 
+          options={{ title: 'Moneda' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, backgroundColor: '#fff' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 20 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 10 },
-  player: { fontSize: 18, marginVertical: 4 },
-});

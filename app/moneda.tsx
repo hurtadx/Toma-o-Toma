@@ -10,14 +10,12 @@ export default function MonedaScreen() {
   const [receptor, setReceptor] = useState<string | null>(null);
   const [resultado, setResultado] = useState<'se_dice' | 'no_se_dice' | null>(null);
   const [flipAnim] = useState(new Animated.Value(0));
-  const [isFlipping, setIsFlipping] = useState(false);  const flipCoin = () => {
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [playersSelected, setPlayersSelected] = useState(false);  const selectPlayers = () => {
     if (players.length < 2) {
       alert('Se necesitan al menos 2 jugadores para este juego');
       return;
     }
-
-    setIsFlipping(true);
-    setResultado(null);
 
     // Seleccionar emisor y receptor aleatoriamente
     const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
@@ -26,6 +24,18 @@ export default function MonedaScreen() {
     
     setEmisor(newEmisor);
     setReceptor(newReceptor);
+    setPlayersSelected(true);
+    setResultado(null);
+  };
+
+  const flipCoin = () => {
+    if (!playersSelected) {
+      alert('Primero selecciona los jugadores');
+      return;
+    }
+
+    setIsFlipping(true);
+    setResultado(null);
 
     // Animar la moneda
     Animated.sequence([
@@ -50,6 +60,7 @@ export default function MonedaScreen() {
     setEmisor(null);
     setReceptor(null);
     setResultado(null);
+    setPlayersSelected(false);
     flipAnim.setValue(0);
   };
 
@@ -71,16 +82,29 @@ export default function MonedaScreen() {
           ) : (
             <FontAwesome5 name="coins" size={60} color="#ffc107" />
           )}
-        </Animated.View>
-      </View>      <TouchableOpacity 
-        style={[styles.flipButton, isFlipping && styles.flipButtonDisabled]}
-        onPress={flipCoin}
-        disabled={isFlipping}
-      >
-        <FontAwesome5 name="hand-rock" size={20} color="#fff" />
-        <Text style={styles.flipButtonText}>
-          {isFlipping ? 'Lanzando...' : 'Lanzar Moneda'}
-        </Text>      </TouchableOpacity>
+        </Animated.View>      </View>
+
+      {!playersSelected ? (
+        <TouchableOpacity 
+          style={styles.selectButton}
+          onPress={selectPlayers}
+        >
+          <FontAwesome5 name="users" size={20} color="#fff" />
+          <Text style={styles.selectButtonText}>
+            Seleccionar Jugadores
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity 
+          style={[styles.flipButton, isFlipping && styles.flipButtonDisabled]}
+          onPress={flipCoin}
+          disabled={isFlipping}
+        >
+          <FontAwesome5 name="hand-rock" size={20} color="#fff" />
+          <Text style={styles.flipButtonText}>
+            {isFlipping ? 'Lanzando...' : 'Lanzar Moneda'}
+          </Text>        </TouchableOpacity>
+      )}
 
       {emisor && receptor && (
         <View style={styles.playersSelectedContainer}>
@@ -166,11 +190,29 @@ const styles = StyleSheet.create({  container: {
     elevation: 5,
   },
   flipButtonDisabled: {
-    backgroundColor: '#ccc',
-  },  flipButtonText: {
+    backgroundColor: '#ccc',  },  flipButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',  },
+  selectButton: {
+    backgroundColor: '#2196f3',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  selectButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   playersSelectedContainer: {
     backgroundColor: 'rgba(255,255,255,0.1)',
     padding: 15,

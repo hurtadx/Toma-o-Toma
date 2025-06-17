@@ -21,62 +21,67 @@ export default function IndexScreen() {
     }
     router.push('/game-selection');
   };  return (
-    <LinearGradient colors={['#4facfe', '#00f2fe']} style={styles.container}>      <View style={styles.header}>
-        <Ionicons name="game-controller" size={60} color="#fff" style={styles.headerIcon} />
-        <Text style={styles.title}>¡Bienvenido a Toma o Toma!</Text>
-        <Text style={styles.subtitle}>Agrega los nombres de los jugadores</Text>
-      </View>
-      
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Ingresa el nombre del jugador"
-          placeholderTextColor="#999"
-          value={player}
-          onChangeText={setPlayer}
-          returnKeyType="done"
-          onSubmitEditing={handleAddPlayer}
-        />
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={handleAddPlayer}
-        >
-          <Ionicons name="add-circle" size={24} color="#fff" />
-          <Text style={styles.addButtonText}>Agregar jugador</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {players.length > 0 && (        <View style={styles.playersContainer}>
-          <View style={styles.playersHeader}>
-            <Ionicons name="people" size={20} color="#fff" />
-            <Text style={styles.playersTitle}>Jugadores ({players.length})</Text>
-          </View>
-          <FlatList
-            data={players}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View style={styles.playerItem}>
-                <Ionicons name="person" size={16} color="#4caf50" />
-                <Text style={styles.player}>{item}</Text>
-              </View>
-            )}
-            style={styles.playersList}
-          />
+    <LinearGradient colors={['#4facfe', '#00f2fe']} style={styles.container}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Ionicons name="game-controller" size={60} color="#fff" style={styles.headerIcon} />
+          <Text style={styles.title}>¡Bienvenido a Toma o Toma!</Text>
+          <Text style={styles.subtitle}>Agrega los nombres de los jugadores</Text>
         </View>
-      )}
-      
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.continueButton, players.length === 0 && styles.continueButtonDisabled]}
-          onPress={continueToGameSelection}
-          disabled={players.length === 0}
-        >
-          <Ionicons name="play" size={20} color="#fff" />
-          <Text style={styles.continueButtonText}>
-            {`Continuar${players.length > 0 ? ` (${players.length} jugadores)` : ''}`}
-          </Text>
-        </TouchableOpacity>
-      </View>
+        
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Ingresa el nombre del jugador"
+            placeholderTextColor="#999"
+            value={player}
+            onChangeText={setPlayer}
+            returnKeyType="done"
+            onSubmitEditing={handleAddPlayer}
+          />
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={handleAddPlayer}
+          >
+            <Ionicons name="add-circle" size={24} color="#fff" />
+            <Text style={styles.addButtonText}>Agregar jugador</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {players.length > 0 && (
+          <View style={styles.playersContainer}>
+            <View style={styles.playersHeader}>
+              <Ionicons name="people" size={20} color="#fff" />
+              <Text style={styles.playersTitle}>Jugadores ({players.length})</Text>
+            </View>
+            <View style={styles.playersListContainer}>
+              {players.map((player, index) => (
+                <View key={index} style={styles.playerItem}>
+                  <Ionicons name="person" size={16} color="#4caf50" />
+                  <Text style={styles.player}>{player}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+        
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[styles.continueButton, players.length === 0 && styles.continueButtonDisabled]}
+            onPress={continueToGameSelection}
+            disabled={players.length === 0}
+          >
+            <Ionicons name="play" size={20} color="#fff" />
+            <Text style={styles.continueButtonText}>
+              {`Continuar${players.length > 0 ? ` (${players.length} jugadores)` : ''}`}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -84,7 +89,16 @@ export default function IndexScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-  },  header: {
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingBottom: 30,
+  },
+  header: {
     padding: 24,
     alignItems: 'center',
   },

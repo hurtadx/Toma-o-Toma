@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Animated } from 'react-native';
 
 export default function TemporizadorScreen() {
@@ -42,8 +41,10 @@ export default function TemporizadorScreen() {
   };
 
   return (
-    <LinearGradient colors={['#4facfe', '#00f2fe']} style={styles.container}>
-      <Text style={styles.title}>Juego del Temporizador</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Juego del Temporizador</Text>
+      </View>
       {!isRunning && (
         <>
           <TextInput
@@ -53,21 +54,93 @@ export default function TemporizadorScreen() {
             value={seconds}
             onChangeText={setSeconds}
           />
-          <Button title="Iniciar Temporizador" onPress={startTimer} />
+          <TouchableOpacity style={styles.startButton} onPress={startTimer}>
+            <Text style={styles.startButtonText}>Iniciar Temporizador</Text>
+          </TouchableOpacity>
         </>
       )}
-      {isRunning && timeLeft !== null && (
-        <Animated.Text style={[styles.timer, { transform: [{ scale: scaleAnim }] }]}>Tiempo restante: {timeLeft} segundos</Animated.Text>
+      {isRunning && (
+        <Animated.View style={[styles.timerDisplay, { transform: [{ scale: scaleAnim }] }]}>
+          <Text style={styles.timerText}>{timeLeft}</Text>
+        </Animated.View>
       )}
-      {timeLeft === 0 && <Text style={styles.finished}>¡El tiempo ha terminado!</Text>}
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 20, color: '#fff' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 10, width: '80%', textAlign: 'center', backgroundColor: '#fff', borderRadius: 8 },
-  timer: { fontSize: 24, marginTop: 20, color: 'blue', fontWeight: 'bold' },
-  finished: { fontSize: 24, marginTop: 20, color: 'red', fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#e1f5fe',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    width: '100%',
+    padding: 16,
+    backgroundColor: '#0288d1',
+    alignItems: 'center',
+    borderRadius: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+  },
+  input: {
+    width: '80%',
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+    textAlign: 'center',
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  startButton: {
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: '#0288d1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  startButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  timerDisplay: {
+    marginTop: 20,
+    padding: 24,
+    borderRadius: 16,
+    backgroundColor: '#0288d1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+    alignItems: 'center',
+  },
+  timerText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });

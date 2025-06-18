@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Animated } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, Animated, TouchableOpacity, StyleSheet } from 'react-native';
 
 const cartas = [
   { tipo: 'Pena', texto: 'Toma 2 shots extra.' },
@@ -33,31 +32,88 @@ export default function CartasScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Turno de: {players[currentPlayerIndex]}</Text>
-      <Button title="Sacar Carta" onPress={sacarCarta} />
+      <View style={styles.header}>
+        <Text style={styles.title}>Turno de: {players[currentPlayerIndex]}</Text>
+      </View>
+      <TouchableOpacity style={styles.cardButton} onPress={sacarCarta}>
+        <Text style={styles.cardButtonText}>Sacar Carta</Text>
+      </TouchableOpacity>
       {selectedCard && (
-        <LinearGradient
-          colors={['#ff7f50', '#ff4500']}
-          style={styles.cardContainer}
-        >
+        <View style={styles.cardContainer}>
           <Text style={styles.cardTipo}>{selectedCard.tipo}</Text>
           <Text style={styles.cardTexto}>{selectedCard.texto}</Text>
-        </LinearGradient>
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, backgroundColor: '#f0f8ff', alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 20, color: '#333' },
-  cardContainer: {
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#fce4ec',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    width: '100%',
+    padding: 16,
+    backgroundColor: '#d81b60',
+    alignItems: 'center',
+    borderRadius: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+  },
+  cardButton: {
     marginTop: 20,
     padding: 16,
-    borderRadius: 8,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
+    borderRadius: 16,
+    backgroundColor: '#d81b60',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
     elevation: 5,
   },
-  cardTipo: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  cardTexto: { fontSize: 20, marginTop: 10, color: '#fff' },
+  cardButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  cardContainer: {
+    marginTop: 20,
+    padding: 24,
+    borderRadius: 16,
+    backgroundColor: '#f8bbd0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+    alignItems: 'center',
+  },
+  cardTipo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#d81b60',
+    marginBottom: 10,
+  },
+  cardTexto: {
+    fontSize: 18,
+    color: '#555',
+    textAlign: 'center',
+  },
 });

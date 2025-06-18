@@ -1,6 +1,6 @@
-import { LinearGradient } from 'expo-linear-gradient';
+import { View } from 'react-native';
 import { useState } from 'react';
-import { Animated, Button, StyleSheet, Text } from 'react-native';
+import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export default function RuletaScreen({ route }) {
   const { players } = route.params;
@@ -26,14 +26,15 @@ export default function RuletaScreen({ route }) {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+
   return (
-    <LinearGradient colors={['#ff7f50', '#ff4500']} style={styles.container}>
-      <Text style={styles.title}>Juego de la Ruleta</Text>
-      
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Juego de la Ruleta</Text>
+      </View>
       <Text style={styles.rules}>
         🎯 Reglas: Gira la ruleta y el jugador seleccionado debe realizar el reto o acción indicada.
       </Text>
-      
       <Animated.View
         style={[
           styles.wheel,
@@ -42,11 +43,13 @@ export default function RuletaScreen({ route }) {
       >
         <Text style={styles.wheelText}>Ruleta</Text>
       </Animated.View>
-      <Button title="Girar Ruleta" onPress={spinWheel} />
+      <TouchableOpacity style={styles.spinButton} onPress={spinWheel}>
+        <Text style={styles.spinButtonText}>Girar Ruleta</Text>
+      </TouchableOpacity>
       {selectedPlayer && (
         <Text style={styles.result}>¡{selectedPlayer} debe tomar!</Text>
       )}
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -54,34 +57,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
+    backgroundColor: '#e3f2fd',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+  header: {
+    width: '100%',
+    padding: 16,
+    backgroundColor: '#0288d1',
+    alignItems: 'center',
+    borderRadius: 16,
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
     color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+  },
+  rules: {
+    fontSize: 18,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   wheel: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: '#fff',
+    backgroundColor: '#0288d1',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
     elevation: 5,
   },
   wheelText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
+  },
+  spinButton: {
+    marginTop: 20,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: '#0288d1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  spinButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   result: {
-    fontSize: 24,
     marginTop: 20,
-    color: 'red',
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#0288d1',
   },
 });

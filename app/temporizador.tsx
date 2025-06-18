@@ -73,65 +73,71 @@ export default function TemporizadorScreen() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-  return (
-    <LinearGradient colors={['#2196f3', '#1976d2']} style={styles.container}>
-      <View style={styles.timeSelectionContainer}>
-        <Text style={styles.sectionTitle}>Selecciona el tiempo:</Text>
-        <View style={styles.timeButtonsContainer}>
-          {tiemposPredefinidos.map((tiempo) => (
-            <TouchableOpacity
-              key={tiempo}
-              style={[
-                styles.timeButton,
-                selectedTime === tiempo && styles.timeButtonSelected
-              ]}
-              onPress={() => setSelectedTime(tiempo)}
-              disabled={isRunning}
-            >
-              <Text style={[
-                styles.timeButtonText,
-                selectedTime === tiempo && styles.timeButtonTextSelected
-              ]}>
-                {tiempo < 60 ? `${tiempo}s` : `${Math.floor(tiempo / 60)}m`}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.timerContainer}>
-        <Text style={styles.timerText}>{formatTime(timeLeft || selectedTime)}</Text>
-        <View style={styles.timerControls}>
-          {!isRunning ? (
-            <TouchableOpacity style={styles.startButton} onPress={startTimer}>
-              <Text style={styles.buttonText}>▶️ Iniciar</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.stopButton} onPress={stopTimer}>
-              <Text style={styles.buttonText}>⏹️ Detener</Text>
-            </TouchableOpacity>
-          )}
-          
-          <TouchableOpacity style={styles.resetButton} onPress={resetTimer}>
-            <Text style={styles.buttonText}>🔄 Reiniciar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {selectedPlayer && selectedReto && (
-        <View style={styles.challengeContainer}>
-          <Text style={styles.playerText}>🎯 Jugador: {selectedPlayer}</Text>
-          <View style={styles.retoContainer}>
-            <Text style={styles.retoTitle}>Tu reto:</Text>
-            <Text style={styles.retoText}>{selectedReto}</Text>
+  };  return (
+    <LinearGradient colors={['#667eea', '#764ba2', '#6B73FF']} style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>⏰ Temporizador</Text>
+            <Text style={styles.subtitle}>Retos contra el tiempo</Text>
+          </View>
+        </View>        <View style={styles.timeSelectionContainer}>
+          <Text style={styles.sectionTitle}>Selecciona el tiempo:</Text>
+          <View style={styles.timeButtonsContainer}>
+            {tiemposPredefinidos.map((tiempo) => (
+              <TouchableOpacity
+                key={tiempo}
+                style={[
+                  styles.timeButton,
+                  selectedTime === tiempo && styles.timeButtonSelected
+                ]}
+                onPress={() => setSelectedTime(tiempo)}
+                disabled={isRunning}
+              >
+                <Text style={[
+                  styles.timeButtonText,
+                  selectedTime === tiempo && styles.timeButtonTextSelected
+                ]}>
+                  {tiempo < 60 ? `${tiempo}s` : `${Math.floor(tiempo / 60)}m`}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
-      )}
 
-      <View style={styles.playersContainer}>
-        <Text style={styles.playersTitle}>Jugadores:</Text>
-        <Text style={styles.playersText}>{players.join(', ')}</Text>
+        <View style={styles.timerContainer}>
+          <Text style={styles.timerText}>{formatTime(timeLeft || selectedTime)}</Text>
+          <View style={styles.timerControls}>
+            {!isRunning ? (
+              <TouchableOpacity style={styles.startButton} onPress={startTimer}>
+                <Text style={styles.buttonText}>▶️ Iniciar</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.stopButton} onPress={stopTimer}>
+                <Text style={styles.buttonText}>⏹️ Detener</Text>
+              </TouchableOpacity>
+            )}
+            
+            <TouchableOpacity style={styles.resetButton} onPress={resetTimer}>
+              <Text style={styles.buttonText}>🔄 Reiniciar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {selectedPlayer && selectedReto && (
+          <View style={styles.challengeContainer}>
+            <Text style={styles.playerText}>🎯 Jugador: {selectedPlayer}</Text>
+            <View style={styles.retoContainer}>
+              <Text style={styles.retoTitle}>Tu reto:</Text>
+              <Text style={styles.retoText}>{selectedReto}</Text>
+            </View>
+          </View>
+        )}
+
+        <View style={styles.playersContainer}>
+          <Text style={styles.playersTitle}>Jugadores:</Text>
+          <Text style={styles.playersText}>{players.join(', ')}</Text>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -144,125 +150,236 @@ const styles = StyleSheet.create({  container: {
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  content: {
+    flex: 1,
+    padding: 20,
+    paddingBottom: 100,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '800',
     color: '#fff',
-    marginBottom: 15,
     textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 8,
+    fontWeight: '600',
+    opacity: 0.9,
+  },  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 20,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   timeSelectionContainer: {
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 15,
   },
   timeButtonsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 10,
+    gap: 12,
   },
   timeButton: {
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
   timeButtonSelected: {
-    backgroundColor: '#fff',
-    borderColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderColor: 'rgba(255,255,255,0.9)',
   },
   timeButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   timeButtonTextSelected: {
-    color: '#2196f3',
+    color: '#667eea',
+    textShadowColor: 'transparent',
   },
   timerContainer: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 30,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 12,
   },
   timerText: {
-    fontSize: 48,
-    fontWeight: 'bold',
+    fontSize: 64,
+    fontWeight: '800',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: 25,
     fontFamily: 'monospace',
-  },
-  timerControls: {
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 10,
+  },  timerControls: {
     flexDirection: 'row',
-    gap: 15,
+    gap: 20,
   },
   startButton: {
-    backgroundColor: '#4caf50',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    backgroundColor: 'rgba(76, 175, 80, 0.9)',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   stopButton: {
-    backgroundColor: '#f44336',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    backgroundColor: 'rgba(244, 67, 54, 0.9)',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   resetButton: {
-    backgroundColor: '#ff9800',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    backgroundColor: 'rgba(255, 152, 0, 0.9)',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   challengeContainer: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    padding: 20,
-    borderRadius: 15,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    padding: 24,
+    borderRadius: 20,
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 15,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 10,
   },
   playerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#fff',
-    marginBottom: 15,
+    marginBottom: 18,
     textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
   retoContainer: {
     alignItems: 'center',
   },
   retoTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: 12,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   retoText: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',
     fontStyle: 'italic',
+    fontWeight: '500',
+    lineHeight: 22,
   },
   playersContainer: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    padding: 16,
+    borderRadius: 15,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   playersTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#fff',
-    marginBottom: 5,
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   playersText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#fff',
     textAlign: 'center',
+    fontWeight: '500',
   },
 });

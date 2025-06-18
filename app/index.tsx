@@ -21,28 +21,31 @@ export default function IndexScreen() {
     }
     router.push('/game-selection');
   };  return (
-    <LinearGradient colors={['#4facfe', '#00f2fe']} style={styles.container}>
+    <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Ionicons name="game-controller" size={60} color="#fff" style={styles.headerIcon} />
+          <View style={styles.iconContainer}>
+            <Ionicons name="game-controller" size={60} color="#fff" style={styles.headerIcon} />
+          </View>
           <Text style={styles.title}>¡Bienvenido a Toma o Toma!</Text>
           <Text style={styles.subtitle}>Agrega los nombres de los jugadores</Text>
         </View>
-        
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Ingresa el nombre del jugador"
-            placeholderTextColor="#999"
-            value={player}
-            onChangeText={setPlayer}
-            returnKeyType="done"
-            onSubmitEditing={handleAddPlayer}
-          />
+          <View style={styles.inputContainer}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingresa el nombre del jugador"
+              placeholderTextColor="#a0a0a0"
+              value={player}
+              onChangeText={setPlayer}
+              returnKeyType="done"
+              onSubmitEditing={handleAddPlayer}
+            />
+          </View>
           <TouchableOpacity 
             style={styles.addButton}
             onPress={handleAddPlayer}
@@ -51,8 +54,7 @@ export default function IndexScreen() {
             <Text style={styles.addButtonText}>Agregar jugador</Text>
           </TouchableOpacity>
         </View>
-        
-        {players.length > 0 && (
+          {players.length > 0 && (
           <View style={styles.playersContainer}>
             <View style={styles.playersHeader}>
               <Ionicons name="people" size={20} color="#fff" />
@@ -61,7 +63,9 @@ export default function IndexScreen() {
             <View style={styles.playersListContainer}>
               {players.map((player, index) => (
                 <View key={index} style={styles.playerItem}>
-                  <Ionicons name="person" size={16} color="#4caf50" />
+                  <View style={styles.playerAvatar}>
+                    <Ionicons name="person" size={16} color="#667eea" />
+                  </View>
                   <Text style={styles.player}>{player}</Text>
                 </View>
               ))}
@@ -102,79 +106,146 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'center',
   },
+  iconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
   headerIcon: {
-    marginBottom: 16,
+    marginBottom: 0,
   },
   inputContainer: {
     width: '100%',
     alignItems: 'center',
-    gap: 16,
+    gap: 20,
     marginVertical: 20,
-  },  footer: {
+  },
+  inputWrapper: {
+    width: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  footer: {
     padding: 24,
-    paddingBottom: 50, // Aumentar margen inferior
+    paddingBottom: 50,
     alignItems: 'center',
   },
   title: { 
-    fontSize: 32, 
-    fontWeight: 'bold', 
-    marginBottom: 10, 
+    fontSize: 34, 
+    fontWeight: '800', 
+    marginBottom: 12, 
     color: '#fff',
-    textAlign: 'center'
+    textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   subtitle: {
     fontSize: 18,
     marginBottom: 30,
     color: '#fff',
     textAlign: 'center',
-    opacity: 0.9
-  },  input: { 
-    borderWidth: 1, 
-    borderColor: '#ccc', 
-    padding: 12, 
-    width: '80%', 
+    opacity: 0.95,
+    fontWeight: '500',
+  },
+  input: { 
+    borderWidth: 0, 
+    padding: 16, 
+    width: '100%', 
     textAlign: 'center', 
-    backgroundColor: '#fff', 
-    borderRadius: 8,
-    fontSize: 16
+    backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+    borderRadius: 25,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
   },
   addButton: {
-    backgroundColor: '#4caf50',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 30,
+    gap: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   addButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-  },  playersContainer: {
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  playersContainer: {
     marginVertical: 20,
-    width: '80%',
-    maxHeight: 200
+    width: '85%',
+    maxHeight: 250
   },
   playersHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    marginBottom: 10,
+    gap: 10,
+    marginBottom: 16,
   },
   playersTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#fff',
-  },  playerItem: {
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  playersListContainer: {
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 20,
+    padding: 16,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  playerItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    padding: 8,
-    marginVertical: 2,
-    borderRadius: 8,
-    gap: 8,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    padding: 12,
+    marginVertical: 4,
+    borderRadius: 15,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  playerAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   playersList: {
     backgroundColor: 'rgba(255,255,255,0.1)',
@@ -186,22 +257,34 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     color: '#fff',
     flex: 1,
+    fontWeight: '600',
   },
   continueButton: {
-    backgroundColor: '#2196f3',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    gap: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 30,
+    gap: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 15,
+    elevation: 10,
   },
   continueButtonDisabled: {
-    backgroundColor: '#cccccc',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.15)',
   },
   continueButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 });

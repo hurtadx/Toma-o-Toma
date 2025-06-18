@@ -14,7 +14,9 @@ export default function MonedaScreen() {
   const [isFlipping, setIsFlipping] = useState(false);
   const [selectedForSecret, setSelectedForSecret] = useState<string[]>([]);
   const [showingSecret, setShowingSecret] = useState(false);
-  const [flipAnim] = useState(new Animated.Value(0));  const selectRandomPlayers = () => {
+  const [flipAnim] = useState(new Animated.Value(0));
+
+  const selectRandomPlayers = () => {
     if (players.length < 2) {
       alert('Se necesitan al menos 2 jugadores para este juego');
       return;
@@ -86,41 +88,53 @@ export default function MonedaScreen() {
     flipAnim.setValue(0);
   };
 
-  const flipInterpolation = flipAnim.interpolate({    inputRange: [0, 0.5, 1],
+  const flipInterpolation = flipAnim.interpolate({
+    inputRange: [0, 0.5, 1],
     outputRange: ['0deg', '90deg', '180deg'],
   });
 
+  const getPlayerBadgeStyle = (player: string) => {
+    if (player === emisor) return styles.playerBadgeEmisor;
+    if (player === encuestado) return styles.playerBadgeEncuestado;
+    if (selectedForSecret.includes(player)) return styles.playerBadgeSecret;
+    return styles.playerBadgeDefault;
+  };
+
+  const getPlayerIcon = (player: string) => {
+    if (player === emisor) return ' 🎤';
+    if (player === encuestado) return ' 👂';
+    if (selectedForSecret.includes(player)) return ' 👁️';
+    return '';
+  };
+
   return (
     <LinearGradient colors={['#1e293b', '#7e22ce', '#1e293b']} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>        {/* Header simplificado */}
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header */}
         <View style={styles.header}>
           <View style={styles.titleSection}>
-            <Text style={styles.title}>Se dice o Callar</Text>
+            <View style={styles.titleRow}>
+              <FontAwesome5 name="comment" size={24} color="#fff" />
+              <Text style={styles.title}>Se dice o Callar</Text>
+            </View>
             <TouchableOpacity onPress={resetGame} style={styles.resetButton}>
-              <MaterialIcons name="refresh" size={18} color="#fff" />
+              <MaterialIcons name="refresh" size={16} color="#fff" />
+              <Text style={styles.resetButtonText}>Nuevo</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Lista de jugadores compacta */}
-          {(emisor || encuestado || selectedForSecret.length > 0) && (
-            <View style={styles.playersRow}>
-              {emisor && (
-                <View style={styles.emisorBadge}>
-                  <Text style={styles.badgeText}>{emisor} 🎤</Text>
-                </View>
-              )}
-              {encuestado && (
-                <View style={styles.encuestadoBadge}>
-                  <Text style={styles.badgeText}>{encuestado} 👂</Text>
-                </View>
-              )}
-              {selectedForSecret.map((player, index) => (
-                <View key={index} style={styles.secretBadge}>
-                  <Text style={styles.badgeText}>{player} 👁️</Text>
+          {/* Lista de jugadores */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.playersScroll}>
+            <View style={styles.playersContainer}>
+              {players.map((player, index) => (
+                <View key={index} style={[styles.playerBadge, getPlayerBadgeStyle(player)]}>
+                  <Text style={styles.playerBadgeText}>
+                    {player}{getPlayerIcon(player)}
+                  </Text>
                 </View>
               ))}
             </View>
-          )}
+          </ScrollView>
         </View>
 
         {/* Área principal del juego */}
@@ -142,12 +156,11 @@ export default function MonedaScreen() {
 
           {gameState === 'questioning' && (
             <View style={styles.centerContent}>
-              <Text style={styles.mainTitle}>Momento Secreto</Text>              <View style={styles.instructionCard}>
+              <Text style={styles.mainTitle}>Momento Secreto</Text>
+              <View style={styles.instructionCard}>
                 <FontAwesome5 name="comment" size={32} color="#3b82f6" />
                 <Text style={styles.instructionText}>
-                  <Text style={styles.playerHighlight}>{emisor}</Text>
-                  <Text> debe hacerle una pregunta en secreto a </Text>
-                  <Text style={styles.playerHighlight}>{encuestado}</Text>
+                  <Text style={styles.playerHighlight}>{emisor}</Text> debe hacerle una pregunta en secreto a <Text style={styles.playerHighlight}>{encuestado}</Text>
                 </Text>
               </View>
               <Text style={styles.helpText}>📱 Pasen el teléfono o susurren la pregunta</Text>
@@ -256,12 +269,11 @@ export default function MonedaScreen() {
           {showingSecret && (
             <View style={styles.centerContent}>
               <Text style={styles.secretTitle}>🔓 Momento de la Verdad</Text>
-                <View style={styles.secretRevealCard}>
+              
+              <View style={styles.secretRevealCard}>
                 <FontAwesome5 name="comment" size={40} color="#fbbf24" />
                 <Text style={styles.secretRevealText}>
-                  <Text style={styles.playerHighlight}>{emisor}</Text>
-                  <Text> ahora debe revelar la pregunta que le hizo a </Text>
-                  <Text style={styles.playerHighlight}>{encuestado}</Text>
+                  <Text style={styles.playerHighlight}>{emisor}</Text> ahora debe revelar la pregunta que le hizo a <Text style={styles.playerHighlight}>{encuestado}</Text>
                 </Text>
                 
                 <View style={styles.secretInstructions}>
@@ -295,10 +307,10 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-  },  header: {
+  },
+  header: {
     padding: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   titleSection: {
     flexDirection: 'row',
@@ -306,124 +318,134 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#fff',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   resetButton: {
-    backgroundColor: 'rgba(239, 68, 68, 0.9)',
-    padding: 8,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  playersRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 4,
-  },
-  emisorBadge: {
-    backgroundColor: '#3b82f6',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 8,
   },
-  encuestadoBadge: {
-    backgroundColor: '#10b981',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  secretBadge: {
-    backgroundColor: '#f59e0b',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  badgeText: {    color: '#fff',
+  resetButtonText: {
+    color: '#fff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  playersScroll: {
+    marginTop: 8,
+  },
+  playersContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingBottom: 8,
+  },
+  playerBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 16,
+    minWidth: 60,
+  },
+  playerBadgeDefault: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  playerBadgeEmisor: {
+    backgroundColor: '#3b82f6',
+  },
+  playerBadgeEncuestado: {
+    backgroundColor: '#10b981',
+  },
+  playerBadgeSecret: {
+    backgroundColor: '#f59e0b',
+  },
+  playerBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   gameArea: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingBottom: 40,
   },
   centerContent: {
     alignItems: 'center',
-    width: '100%',
   },
   iconContainer: {
     width: 80,
     height: 80,
-    backgroundColor: '#475569',
+    backgroundColor: 'rgba(59, 130, 246, 1)',
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   mainTitle: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#cbd5e1',
+    color: 'rgba(255,255,255,0.7)',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 32,
   },
   instructionCard: {
-    backgroundColor: '#334155',
-    padding: 20,
+    backgroundColor: 'rgba(59, 130, 246, 0.2)',
     borderRadius: 16,
+    padding: 24,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
     alignItems: 'center',
-    marginBottom: 20,
     width: '100%',
-    gap: 12,
+    maxWidth: 350,
   },
   instructionText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#e2e8f0',
     textAlign: 'center',
-    lineHeight: 22,
+    marginTop: 12,
   },
   playerHighlight: {
+    fontWeight: 'bold',
     color: '#60a5fa',
-    fontWeight: '700',
   },
   helpText: {
+    color: 'rgba(255,255,255,0.6)',
     fontSize: 14,
-    color: '#94a3b8',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   textInput: {
-    backgroundColor: '#1e293b',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderWidth: 1,
-    borderColor: '#475569',
+    borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 8,
     padding: 12,
     color: '#fff',
-    fontSize: 14,
+    marginTop: 16,
     width: '100%',
-    minHeight: 60,
+    height: 80,
     textAlignVertical: 'top',
   },
   primaryButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: 'rgba(59, 130, 246, 1)',
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
@@ -436,14 +458,15 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   secondaryButton: {
-    backgroundColor: '#64748b',
-    paddingHorizontal: 28,
+    backgroundColor: 'rgba(16, 185, 129, 1)',
+    paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
+    marginTop: 12,
   },
   secondaryButtonText: {
     color: '#fff',
@@ -452,160 +475,168 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   coinContainer: {
-    marginVertical: 30,
+    marginVertical: 32,
   },
   coin: {
-    width: 120,
-    height: 120,
-    backgroundColor: '#fbbf24',
-    borderRadius: 60,
+    width: 128,
+    height: 128,
+    backgroundColor: 'rgba(251, 191, 36, 1)',
+    borderRadius: 64,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.5,
     shadowRadius: 16,
     elevation: 16,
   },
   coinText: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#fff',
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: 'rgba(251, 191, 36, 0.9)',
   },
   resultCard: {
     padding: 24,
     borderRadius: 16,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
+    borderWidth: 1,
     width: '100%',
+    maxWidth: 350,
+  },
+  resultPositive: {
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    borderColor: 'rgba(16, 185, 129, 0.3)',
+  },
+  resultNegative: {
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
+  resultTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginVertical: 12,
+  },
+  resultDescription: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  answerCard: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    width: '100%',
+    maxWidth: 350,
+  },
+  answerLabel: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  answerText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  secretCard: {
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
+    width: '100%',
+    maxWidth: 350,
+  },
+  secretText: {
+    color: 'rgba(251, 191, 36, 1)',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  buttonGroup: {
+    alignItems: 'center',
     gap: 12,
+    width: '100%',
+  },
+  warningButton: {
+    backgroundColor: 'rgba(251, 191, 36, 1)',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
-  resultPositive: {
-    backgroundColor: '#10b981',
-  },
-  resultNegative: {
-    backgroundColor: '#ef4444',
-  },
-  resultTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  resultDescription: {
-    fontSize: 16,
-    color: '#f1f5f9',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  answerCard: {
-    backgroundColor: '#334155',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    width: '100%',
-  },
-  answerLabel: {
-    fontSize: 12,
-    color: '#94a3b8',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  answerText: {
-    fontSize: 16,
-    color: '#fff',
-    fontStyle: 'italic',
-  },
-  secretCard: {
-    backgroundColor: '#f59e0b',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-    width: '100%',
-  },
-  secretText: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  buttonGroup: {
-    width: '100%',
-    gap: 12,
-    alignItems: 'center',
-  },
-  warningButton: {
-    backgroundColor: '#f59e0b',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
   warningButtonText: {
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   secretTitle: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#fbbf24',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   secretRevealCard: {
-    backgroundColor: '#334155',
-    padding: 24,
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
     borderRadius: 16,
+    padding: 24,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
     alignItems: 'center',
-    marginBottom: 20,
     width: '100%',
-    gap: 16,
+    maxWidth: 350,
   },
   secretRevealText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#e2e8f0',
     textAlign: 'center',
-    lineHeight: 22,
+    marginVertical: 16,
   },
   secretInstructions: {
-    backgroundColor: '#1e293b',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 8,
     padding: 16,
-    borderRadius: 12,
+    marginVertical: 16,
     width: '100%',
-    gap: 8,
   },
   secretInstructionTitle: {
-    fontSize: 16,
     color: '#fbbf24',
-    fontWeight: '700',
+    fontSize: 14,
+    marginBottom: 8,
     textAlign: 'center',
   },
   secretInstructionText: {
+    color: '#fff',
     fontSize: 14,
-    color: '#94a3b8',
+    fontWeight: '600',
     textAlign: 'center',
   },
   reminderCard: {
-    backgroundColor: '#7c3aed',
-    padding: 12,
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
     borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
     width: '100%',
   },
   reminderText: {
-    fontSize: 14,
-    color: '#fff',
+    color: 'rgba(239, 68, 68, 1)',
+    fontSize: 12,
     textAlign: 'center',
-    fontWeight: '600',
   },
   countdownText: {
+    color: 'rgba(255,255,255,0.6)',
     fontSize: 14,
-    color: '#94a3b8',
     textAlign: 'center',
     marginTop: 16,
   },

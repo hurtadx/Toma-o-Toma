@@ -10,20 +10,20 @@ const WHEEL_SIZE = Math.min(width * 0.6, height * 0.35, 280);
 const CENTER = WHEEL_SIZE / 2;
 const RADIUS = CENTER - 10;
 
-// Colores vibrantes para las secciones
+// Colores vibrantes para las secciones con gradientes
 const colors = [
-  "#1E88E5", // Azul
-  "#D32F2F", // Rojo  
-  "#FF8F00", // Naranja
-  "#388E3C", // Verde
-  "#8E24AA", // Púrpura
-  "#0097A7", // Verde azulado
-  "#E91E63", // Rosa
-  "#303F9F", // Azul oscuro
-  "#689F38", // Verde claro
-  "#1976D2", // Azul
-  "#795548", // Marrón
-  "#FF5722"  // Naranja rojizo
+  "#FF6B6B", // Coral
+  "#4ECDC4", // Turquesa
+  "#45B7D1", // Azul cielo
+  "#96CEB4", // Verde menta
+  "#FFEAA7", // Amarillo suave
+  "#DDA0DD", // Ciruela
+  "#98D8C8", // Verde agua
+  "#F7DC6F", // Dorado
+  "#BB8FCE", // Lavanda
+  "#85C1E9", // Azul claro
+  "#F8C471", // Naranja claro
+  "#82E0AA"  // Verde claro
 ];
 
 export default function RuletaScreen() {  const { players } = usePlayers();
@@ -166,13 +166,17 @@ export default function RuletaScreen() {  const { players } = usePlayers();
       useNativeDriver: true,
     }).start();    
     setSelectedPlayer(null);
-  };return (
-    <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
+  };  return (
+    <LinearGradient colors={['#6C5CE7', '#A29BFE']} style={styles.container}>
       <ScrollView 
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
-      >        <View style={styles.header}>
-          <Text style={styles.title}>Ruleta de Jugadores</Text>
+      >        
+        <View style={styles.header}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Ruleta de Jugadores</Text>
+            <Text style={styles.subtitle}>¡Gira y descubre quién será!</Text>
+          </View>
         </View>
 
       {players.length === 0 ? (        <View style={styles.noPlayersContainer}>
@@ -253,72 +257,80 @@ export default function RuletaScreen() {  const { players } = usePlayers();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },  scrollContainer: {
+  },
+  scrollContainer: {
     flexGrow: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
-    paddingBottom: 100, // Aumentar margen inferior para navegación
+    paddingBottom: 100,
   },
   header: {
     alignItems: 'center',
     marginBottom: 20,
-  },title: {
-    fontSize: 28,
-    fontWeight: 'bold',
+  },
+  titleContainer: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '800',
     color: '#ffffff',
     textAlign: 'center',
-    ...(Platform.OS === 'web' 
-      ? { textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }
-      : {
-          textShadowColor: 'rgba(0,0,0,0.3)',
-          textShadowOffset: { width: 2, height: 2 },
-          textShadowRadius: 4,
-        }
-    ),
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   subtitle: {
     fontSize: 16,
     color: '#f0f0f0',
     textAlign: 'center',
-    marginTop: 10,
-    paddingHorizontal: 20,
-  },  ruletaContainer: {
+    marginTop: 8,
+    fontWeight: '500',
+    opacity: 0.9,
+  },
+  ruletaContainer: {
     alignItems: 'center',
     marginVertical: 10,
     position: 'relative',
     flex: 1,
     justifyContent: 'center',
-  },  leftIndicator: {
+  },
+  leftIndicator: {
     position: 'absolute',
     left: 20,
     top: '50%',
     zIndex: 10,
     transform: [{ translateY: -15 }],
-  },  topIndicator: {
+  },
+  topIndicator: {
     position: 'absolute',
-    top: -10,
+    top: -15,
     left: '50%',
     zIndex: 10,
-    transform: [{ translateX: -12 }],
-  },topArrow: {
+    transform: [{ translateX: -15 }],
+  },
+  topArrow: {
     width: 0,
     height: 0,
-    borderLeftWidth: 12,
-    borderRightWidth: 12,
-    borderTopWidth: 25,
+    borderLeftWidth: 15,
+    borderRightWidth: 15,
+    borderTopWidth: 30,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#FF4444',
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '2px 2px 8px rgba(0,0,0,0.4)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 0.4,
-          shadowRadius: 6,
-        }
-    ),
-  },leftArrow: {
+    borderTopColor: '#FF6B6B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  leftArrow: {
     width: 0,
     height: 0,
     borderTopWidth: 15,
@@ -327,139 +339,142 @@ const styles = StyleSheet.create({
     borderTopColor: 'transparent',
     borderBottomColor: 'transparent',
     borderRightColor: '#ffffff',
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '2px 2px 4px rgba(0,0,0,0.3)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 0.3,
-          shadowRadius: 4,
-        }
-    ),
-  },  wheelWrapper: {
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  wheelWrapper: {
     borderRadius: WHEEL_SIZE / 2,
     backgroundColor: '#ffffff',
-    padding: 5,
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '0px 8px 15px rgba(0,0,0,0.3)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.3,
-          shadowRadius: 15,
-          elevation: 10,
-        }
-    ),
+    padding: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.4,
+    shadowRadius: 25,
+    elevation: 15,
+    borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.8)',
   },
   wheel: {
     borderRadius: WHEEL_SIZE / 2,
     overflow: 'hidden',
-  },  resultContainer: {
+  },
+  resultContainer: {
     backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 24,
     alignItems: 'center',
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '0px 4px 8px rgba(0,0,0,0.3)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 6,
-        }
-    ),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   resultPlayer: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#667eea',
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#6C5CE7',
+    marginBottom: 12,
+    textAlign: 'center',
   },
   resultText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
   },
   resultSi: {
     color: '#4CAF50',
-  },  resultNo: {
+  },
+  resultNo: {
     color: '#f44336',
   },
   buttonsContainer: {
-    gap: 15,
-  },button: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    gap: 20,
+  },
+  button: {
+    paddingVertical: 18,
+    paddingHorizontal: 36,
+    borderRadius: 30,
     alignItems: 'center',
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '0px 3px 5px rgba(0,0,0,0.2)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 3 },
-          shadowOpacity: 0.2,
-          shadowRadius: 5,
-          elevation: 4,
-        }
-    ),
-  },  spinButton: {
-    backgroundColor: '#4CAF50',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  spinButton: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
   },
   disabledButton: {
-    backgroundColor: '#cccccc',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   buttonText: {
     color: '#ffffff',
     fontSize: 18,
-    fontWeight: 'bold',
-  },  noPlayersContainer: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 15,
-    padding: 20,
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  noPlayersContainer: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 20,
+    padding: 24,
     marginTop: 50,
     alignItems: 'center',
-    ...(Platform.OS === 'web' 
-      ? { boxShadow: '0px 4px 8px rgba(0,0,0,0.3)' }
-      : {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 6,
-        }
-    ),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   noPlayersText: {
-    fontSize: 18,
-    color: '#d32f2f',
-    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#6C5CE7',
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   noPlayersSubtext: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
     textAlign: 'center',
+    fontWeight: '500',
   },
   playersListContainer: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 15,
+    padding: 16,
     marginBottom: 20,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   playersListTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#fff',
-    marginBottom: 8,
+    marginBottom: 10,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   playersListText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#fff',
     textAlign: 'center',
-    lineHeight: 18,
+    lineHeight: 20,
+    fontWeight: '500',
   },
 });

@@ -1,37 +1,30 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions, Platform, ScrollView } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { Animated, Dimensions, Easing, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Svg, { Circle, Path, Text as SvgText } from 'react-native-svg';
+import { AppColors } from '../constants/Colors';
 import { usePlayers } from '../context/PlayersContext';
-import Svg, { Path, Text as SvgText, Circle } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
-// Hacer la ruleta más pequeña y responsiva
 const WHEEL_SIZE = Math.min(width * 0.6, height * 0.35, 280);
 const CENTER = WHEEL_SIZE / 2;
 const RADIUS = CENTER - 10;
 
-// Colores vibrantes para las secciones con gradientes
+// Colores más suaves y menos contrastantes
 const colors = [
-  "#FF6B6B", // Coral
-  "#4ECDC4", // Turquesa
-  "#45B7D1", // Azul cielo
-  "#96CEB4", // Verde menta
-  "#FFEAA7", // Amarillo suave
-  "#DDA0DD", // Ciruela
-  "#98D8C8", // Verde agua
-  "#F7DC6F", // Dorado
-  "#BB8FCE", // Lavanda
-  "#85C1E9", // Azul claro
-  "#F8C471", // Naranja claro
-  "#82E0AA"  // Verde claro
+  "#8a5a9c", "#b67b3f", "#5a8fb8", "#6b7db8", 
+  "#7a8bc7", "#8a7db8", "#6b9c8e", "#7db89c",
+  "#b87a7a", "#c7a87a", "#7ab8c7", "#5a8bb8"
 ];
 
-export default function RuletaScreen() {  const { players } = usePlayers();
+export default function RuletaScreen() {
+  const { players } = usePlayers();
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const spinValue = useRef(new Animated.Value(0)).current;
 
-  // Crear secciones basadas en los jugadores
   const createPlayerSections = () => {
     if (players.length === 0) return [];
     
@@ -43,14 +36,14 @@ export default function RuletaScreen() {  const { players } = usePlayers();
   };
 
   const playerSections = createPlayerSections();
-
   const createWheelSections = () => {
     if (playerSections.length === 0) return [];
     
     const sectionElements = [];
     const anglePerSection = (2 * Math.PI) / playerSections.length;
-    
+
     for (let i = 0; i < playerSections.length; i++) {
+      // Ajustar para que la primera sección empiece desde arriba (-90 grados)
       const startAngle = i * anglePerSection - Math.PI / 2;
       const endAngle = (i + 1) * anglePerSection - Math.PI / 2;
       
@@ -59,50 +52,26 @@ export default function RuletaScreen() {  const { players } = usePlayers();
       const x2 = CENTER + RADIUS * Math.cos(endAngle);
       const y2 = CENTER + RADIUS * Math.sin(endAngle);
       
-      const largeArcFlag = anglePerSection > Math.PI ? 1 : 0;
+      const largeArc = anglePerSection > Math.PI ? 1 : 0;
       
-      const pathData = [
-        `M ${CENTER} ${CENTER}`,
-        `L ${x1} ${y1}`,
-        `A ${RADIUS} ${RADIUS} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-        'Z'
-      ].join(' ');
-
-      // Calcular posición del texto
-      const textAngle = startAngle + anglePerSection / 2;
-      const textRadius = RADIUS * 0.65;
-      const textX = CENTER + textRadius * Math.cos(textAngle);
-      const textY = CENTER + textRadius * Math.sin(textAngle);
+      const pathData = `M ${CENTER} ${CENTER} L ${x1} ${y1} A ${RADIUS} ${RADIUS} 0 ${largeArc} 1 ${x2} ${y2} Z`;
       
       sectionElements.push(
         <Path
-          key={i}
+          key={`section-${i}`}
           d={pathData}
           fill={playerSections[i].color}
           stroke="#ffffff"
           strokeWidth="2"
         />
-      );      // Agregar número
-      const numberRadius = RADIUS * 0.85;
-      const numberX = CENTER + numberRadius * Math.cos(textAngle);
-      const numberY = CENTER + numberRadius * Math.sin(textAngle);
-
-      sectionElements.push(
-        <SvgText
-          key={`number-${i}`}
-          x={numberX}
-          y={numberY + 5}
-          fontSize="10"
-          fontWeight="bold"
-          fill="#ffffff"
-          textAnchor="middle"
-          alignmentBaseline="middle"
-        >
-          {playerSections[i].number}
-        </SvgText>
       );
 
-      // Agregar nombre del jugador (ajustar tamaño según longitud del nombre)
+      // Texto del jugador
+      const textAngle = startAngle + anglePerSection / 2;
+      const textRadius = RADIUS * 0.7;
+      const textX = CENTER + textRadius * Math.cos(textAngle);
+      const textY = CENTER + textRadius * Math.sin(textAngle);
+      
       const fontSize = playerSections[i].text.length > 10 ? 8 : 
                      playerSections[i].text.length > 8 ? 9 : 
                      playerSections[i].text.length > 6 ? 10 : 11;
@@ -111,12 +80,13 @@ export default function RuletaScreen() {  const { players } = usePlayers();
         <SvgText
           key={`text-${i}`}
           x={textX}
-          y={textY + 5}
+          y={textY}
           fontSize={fontSize}
           fontWeight="bold"
           fill="#ffffff"
           textAnchor="middle"
           alignmentBaseline="middle"
+          transform={`rotate(${(textAngle * 180 / Math.PI) + 90} ${textX} ${textY})`}
         >
           {playerSections[i].text}
         </SvgText>
@@ -125,40 +95,34 @@ export default function RuletaScreen() {  const { players } = usePlayers();
     
     return sectionElements;
   };  const spinWheel = () => {
-    if (isSpinning || players.length === 0) {
-      alert('Necesitas al menos un jugador para girar la ruleta');
-      return;
-    }    setIsSpinning(true);
+    if (isSpinning || playerSections.length === 0) return;
+    
+    setIsSpinning(true);
     setSelectedPlayer(null);
-
-    // Resetear el valor a 0 para que cada giro empiece desde la misma posición
+    
+    const randomIndex = Math.floor(Math.random() * playerSections.length);
+    const anglePerSection = 360 / playerSections.length;
+    // Calcular el ángulo para que el puntero apunte al centro de la sección
+    const centerAngle = randomIndex * anglePerSection + (anglePerSection / 2);
+    const spins = 5;
+    // Ajustar para que el puntero (que está arriba) apunte al jugador seleccionado
+    // Como las secciones ahora empiezan desde arriba, no necesitamos el +90
+    const finalAngle = spins * 360 + (360 - centerAngle);
+    
     spinValue.setValue(0);
-
-    // Muchas más vueltas para sensación de aleatoriedad: entre 15 y 25 vueltas completas
-    const minSpins = 15 * 360; // 15 vueltas mínimo
-    const extraSpins = Math.random() * 10 * 360; // hasta 10 vueltas adicionales
-    const randomSpin = minSpins + extraSpins;
     
     Animated.timing(spinValue, {
-      toValue: randomSpin,
-      duration: 6500, // Duración más larga para más drama
+      toValue: finalAngle,
+      duration: 3000,
       easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,    }).start(() => {
-      // Calcular el resultado basado en el ángulo final
-      const finalAngle = randomSpin % 360;
-      // Para el puntero superior: el ganador es la sección que esté arriba
-      // La sección 0 empieza en 0°, así que simplemente usamos el ángulo final
-      const adjustedAngle = (360 - finalAngle) % 360; // Invertir porque la ruleta gira hacia la derecha
-      const sectionAngle = 360 / playerSections.length;
-      const selectedIndex = Math.floor(adjustedAngle / sectionAngle) % playerSections.length;
-        const selectedPlayerName = playerSections[selectedIndex].text;
-      
-      setSelectedPlayer(selectedPlayerName);
+      useNativeDriver: true,
+    }).start(() => {
+      setSelectedPlayer(playerSections[randomIndex].text);
       setIsSpinning(false);
     });
   };
+
   const resetRuleta = () => {
-    // Animación suave para volver a la posición inicial
     Animated.timing(spinValue, {
       toValue: 0,
       duration: 800,
@@ -167,88 +131,112 @@ export default function RuletaScreen() {  const { players } = usePlayers();
     }).start();    
     setSelectedPlayer(null);
   };  return (
-    <LinearGradient colors={['#6C5CE7', '#A29BFE']} style={styles.container}>
+    <LinearGradient
+      colors={[AppColors.backgroundDark, AppColors.backgroundDarker]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
+      {/* Header con botón de volver */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <FontAwesome5 name="arrow-left" size={20} color={AppColors.textWhite} />
+          <Text style={styles.backButtonText}>Volver</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Ruleta</Text>
+      </View>
+
       <ScrollView 
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
-      >        
-        <View style={styles.header}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Ruleta de Jugadores</Text>
-            <Text style={styles.subtitle}>¡Gira y descubre quién será!</Text>
-          </View>
+      >
+        {/* Subtitle */}
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.subtitle}>¡Gira y descubre quién será!</Text>
         </View>
-
-      {players.length === 0 ? (        <View style={styles.noPlayersContainer}>
-          <Text style={styles.noPlayersText}>
-            Necesitas agregar jugadores primero
-          </Text>
-          <Text style={styles.noPlayersSubtext}>
-            Ve a la pantalla inicial para agregar jugadores
-          </Text>
-        </View>
-      ) : (
-        <>          <View style={styles.ruletaContainer}>
-            {/* Flecha indicadora arriba - posición tradicional */}
-            <View style={styles.topIndicator}>
-              <View style={styles.topArrow} />
-            </View>
-
-            {/* Ruleta */}
-            <View style={styles.wheelWrapper}>
-              <Animated.View 
-                style={[
-                  styles.wheel,
-                  {
-                    transform: [{
-                      rotate: spinValue.interpolate({
-                        inputRange: [0, 360],
-                        outputRange: ['0deg', '360deg']
-                      })
-                    }]
-                  }
-                ]}
-              >
-                <Svg width={WHEEL_SIZE} height={WHEEL_SIZE}>
-                  {createWheelSections()}
-                  {/* Centro blanco de la ruleta */}
-                  <Circle
-                    cx={CENTER}
-                    cy={CENTER}
-                    r="25"
-                    fill="#ffffff"
-                    stroke="#dddddd"
-                    strokeWidth="2"
-                  />
-                </Svg>
-              </Animated.View>
-            </View>
-          </View>
-
-          {/* Mostrar lista de jugadores */}
-          <View style={styles.playersListContainer}>
-            <Text style={styles.playersListTitle}>Jugadores en la ruleta:</Text>
-            <Text style={styles.playersListText}>
-              {players.map((player, index) => `${index + 1}. ${player}`).join(' • ')}
+        {players.length === 0 ? (
+          <View style={styles.noPlayersContainer}>
+            <Text style={styles.noPlayersText}>
+              Necesitas agregar jugadores primero
             </Text>
-          </View>          {selectedPlayer && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.resultPlayer}>¡{selectedPlayer} fue seleccionado!</Text>
-              <Text style={styles.resultText}>¡Tu turno para el siguiente desafío!</Text>
-            </View>
-          )}          <View style={styles.buttonsContainer}>
-            <TouchableOpacity 
-              style={[styles.button, styles.spinButton, isSpinning && styles.disabledButton]} 
-              onPress={spinWheel}
-              disabled={isSpinning}
-            >
-              <Text style={styles.buttonText}>
-                {isSpinning ? 'Girando...' : 'Girar Ruleta'}
-              </Text>
-            </TouchableOpacity>
+            <Text style={styles.noPlayersSubtext}>
+              Ve a la pantalla inicial para agregar jugadores
+            </Text>
           </View>
-        </>
-      )}
+        ) : (
+          <>
+            <View style={styles.ruletaContainer}>
+              {/* Flecha indicadora */}
+              <View style={styles.topIndicator}>
+                <View style={styles.topArrow} />
+              </View>
+
+              {/* Ruleta */}
+              <View style={styles.wheelWrapper}>
+                <Animated.View 
+                  style={[
+                    styles.wheel,
+                    {
+                      transform: [{
+                        rotate: spinValue.interpolate({
+                          inputRange: [0, 360],
+                          outputRange: ['0deg', '360deg']
+                        })
+                      }]
+                    }
+                  ]}
+                >
+                  <Svg width={WHEEL_SIZE} height={WHEEL_SIZE}>
+                    {createWheelSections()}
+                    <Circle
+                      cx={CENTER}
+                      cy={CENTER}
+                      r="15"
+                      fill="#ffffff"
+                      stroke="#333"
+                      strokeWidth="3"
+                    />
+                  </Svg>
+                </Animated.View>
+              </View>
+            </View>
+
+            {/* Resultado */}
+            {selectedPlayer && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultText}>¡Resultado!</Text>
+                <Text style={styles.resultPlayer}>{selectedPlayer}</Text>
+              </View>
+            )}
+
+            {/* Botones */}
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity onPress={spinWheel}>                <LinearGradient
+                  colors={[AppColors.ruleta, AppColors.ruletaLight]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.button, isSpinning && styles.disabledButton]}
+                >
+                  <Text style={styles.buttonText}>
+                    {isSpinning ? 'Girando...' : 'Girar Ruleta'}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              {selectedPlayer && (
+                <TouchableOpacity onPress={resetRuleta}>                  <LinearGradient
+                    colors={[AppColors.cartas, AppColors.cartasLight]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText}>Reiniciar</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
     </LinearGradient>
   );
@@ -258,223 +246,144 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 100,
-  },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  titleContainer: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingTop: 50,
     paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    paddingBottom: 20,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#ffffff',
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  backButtonText: {
+    color: AppColors.textWhite,
+    fontSize: 16,
+    marginLeft: 8,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: AppColors.textWhite,
+    flex: 1,
     textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
+    marginRight: 60, // Para compensar el espacio del botón de volver
+  },
+  subtitleContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    alignItems: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#f0f0f0',
-    textAlign: 'center',
-    marginTop: 8,
+    color: 'rgba(255,255,255,0.9)',
     fontWeight: '500',
-    opacity: 0.9,
+    textAlign: 'center',
   },
-  ruletaContainer: {
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 100,
+  },  ruletaContainer: {
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 30,
     position: 'relative',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  leftIndicator: {
-    position: 'absolute',
-    left: 20,
-    top: '50%',
-    zIndex: 10,
-    transform: [{ translateY: -15 }],
+    paddingHorizontal: 20,
   },
   topIndicator: {
     position: 'absolute',
-    top: -15,
-    left: '50%',
+    top: 0,
     zIndex: 10,
-    transform: [{ translateX: -15 }],
+    alignSelf: 'center',
   },
   topArrow: {
     width: 0,
     height: 0,
     borderLeftWidth: 15,
     borderRightWidth: 15,
-    borderTopWidth: 30,
+    borderTopWidth: 25,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#FF6B6B',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  leftArrow: {
-    width: 0,
-    height: 0,
-    borderTopWidth: 15,
-    borderBottomWidth: 15,
-    borderRightWidth: 30,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderRightColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 2 },
+  borderTopColor: AppColors.textWhite,
+  shadowColor: AppColors.shadow,
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 4,
   },
   wheelWrapper: {
+    marginTop: 35,
     borderRadius: WHEEL_SIZE / 2,
-    backgroundColor: '#ffffff',
-    padding: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.4,
-    shadowRadius: 25,
-    elevation: 15,
-    borderWidth: 3,
-    borderColor: 'rgba(255,255,255,0.8)',
+    shadowColor: AppColors.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
   wheel: {
+    width: WHEEL_SIZE,
+    height: WHEEL_SIZE,
     borderRadius: WHEEL_SIZE / 2,
-    overflow: 'hidden',
-  },
-  resultContainer: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 24,
+  },  resultContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 15,
+    padding: 20,
+    marginVertical: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    elevation: 12,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
-  },
-  resultPlayer: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#6C5CE7',
-    marginBottom: 12,
-    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   resultText: {
     fontSize: 18,
+    color: '#fff',
     fontWeight: '600',
-    color: '#333',
+    marginBottom: 10,
+  },  resultPlayer: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: '800',
     textAlign: 'center',
-  },
-  resultSi: {
-    color: '#4CAF50',
-  },
-  resultNo: {
-    color: '#f44336',
   },
   buttonsContainer: {
-    gap: 20,
-  },
-  button: {
+    gap: 15,
+    paddingHorizontal: 20,
+  },  button: {
     paddingVertical: 18,
     paddingHorizontal: 36,
-    borderRadius: 30,
+    borderRadius: 25,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+    shadowColor: '#667eea',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 25,
     elevation: 8,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
-  },
-  spinButton: {
-    backgroundColor: 'rgba(255,255,255,0.25)',
   },
   disabledButton: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  buttonText: {
-    color: '#ffffff',
+    opacity: 0.6,
+  },  buttonText: {
+    color: AppColors.textWhite,
     fontSize: 18,
     fontWeight: '700',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  noPlayersContainer: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    letterSpacing: 1,
+  },noPlayersContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 20,
-    padding: 24,
-    marginTop: 50,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    elevation: 12,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
-  },
-  noPlayersText: {
-    fontSize: 20,
-    color: '#6C5CE7',
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  noPlayersSubtext: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  playersListContainer: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 15,
-    padding: 16,
-    marginBottom: 20,
+    padding: 30,
+    margin: 20,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-  playersListTitle: {
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },  noPlayersText: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
-    marginBottom: 10,
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  playersListText: {
-    fontSize: 15,
-    color: '#fff',
+    color: AppColors.textWhite,
     textAlign: 'center',
-    lineHeight: 20,
-    fontWeight: '500',
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  noPlayersSubtext: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
   },
 });

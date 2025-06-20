@@ -1,20 +1,20 @@
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import { Animated, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { usePlayers } from '../context/PlayersContext';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { AppColors } from '../constants/Colors';
 
 export default function MonedaScreen() {
   const { players } = usePlayers();
-  const [gameState, setGameState] = useState('selecting'); // 'selecting', 'questioning', 'answering', 'flipping', 'revealing', 'showingSecret'
+  const [gameState, setGameState] = useState('selecting'); // 'selecting', 'questioning', 'answering', 'flipping', 'revealing'
   const [emisor, setEmisor] = useState<string | null>(null);
   const [encuestado, setEncuestado] = useState<string | null>(null);
   const [answer, setAnswer] = useState('');
   const [coinResult, setCoinResult] = useState<'Se dice' | 'Callar' | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
   const [selectedForSecret, setSelectedForSecret] = useState<string[]>([]);
-  const [showingSecret, setShowingSecret] = useState(false);
-  const [flipAnim] = useState(new Animated.Value(0));  const selectRandomPlayers = () => {
+  const [flipAnim] = useState(new Animated.Value(0));const selectRandomPlayers = () => {
     if (players.length < 2) {
       alert('Se necesitan al menos 2 jugadores para este juego');
       return;
@@ -60,19 +60,11 @@ export default function MonedaScreen() {
       setGameState('revealing');
     });
   };
-
   const selectPlayersForSecret = () => {
     const otherPlayers = players.filter(p => p !== emisor && p !== encuestado);
     const numSelected = Math.min(2, otherPlayers.length);
     const selected = otherPlayers.sort(() => Math.random() - 0.5).slice(0, numSelected);
     setSelectedForSecret(selected);
-  };
-
-  const handleShowSecret = () => {
-    setShowingSecret(true);
-    setTimeout(() => {
-      resetGame();
-    }, 4000);
   };
 
   const resetGame = () => {
@@ -82,17 +74,20 @@ export default function MonedaScreen() {
     setAnswer('');
     setCoinResult(null);
     setSelectedForSecret([]);
-    setShowingSecret(false);
     flipAnim.setValue(0);
   };
 
   const flipInterpolation = flipAnim.interpolate({    inputRange: [0, 0.5, 1],
     outputRange: ['0deg', '90deg', '180deg'],
-  });
-
-  return (
-    <LinearGradient colors={['#1e293b', '#7e22ce', '#1e293b']} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>        {/* Header simplificado */}
+  });  return (
+    <LinearGradient
+      colors={[AppColors.backgroundDark, AppColors.backgroundDarker]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header simplificado */}
         <View style={styles.header}>
           <View style={styles.titleSection}>
             <Text style={styles.title}>Se dice o Callar</Text>
@@ -106,17 +101,16 @@ export default function MonedaScreen() {
             <View style={styles.playersRow}>
               {emisor && (
                 <View style={styles.emisorBadge}>
-                  <Text style={styles.badgeText}>{emisor} 🎤</Text>
+                  <Text style={styles.badgeText}>{emisor}</Text>
                 </View>
               )}
-              {encuestado && (
-                <View style={styles.encuestadoBadge}>
-                  <Text style={styles.badgeText}>{encuestado} 👂</Text>
+              {encuestado && (                <View style={styles.encuestadoBadge}>
+                  <Text style={styles.badgeText}>{encuestado}</Text>
                 </View>
               )}
               {selectedForSecret.map((player, index) => (
                 <View key={index} style={styles.secretBadge}>
-                  <Text style={styles.badgeText}>{player} 👁️</Text>
+                  <Text style={styles.badgeText}>{player}</Text>
                 </View>
               ))}
             </View>
@@ -150,7 +144,7 @@ export default function MonedaScreen() {
                   <Text style={styles.playerHighlight}>{encuestado}</Text>
                 </Text>
               </View>
-              <Text style={styles.helpText}>📱 Pasen el teléfono o susurren la pregunta</Text>
+              <Text style={styles.helpText}>Pasen el teléfono o susurren la pregunta</Text>
               
               <TouchableOpacity onPress={() => setGameState('answering')} style={styles.secondaryButton}>
                 <Text style={styles.secondaryButtonText}>Ya hice la pregunta</Text>
@@ -210,11 +204,10 @@ export default function MonedaScreen() {
                   size={32} 
                   color="#fff" 
                 />
-                <Text style={styles.resultTitle}>{coinResult}</Text>
-                <Text style={styles.resultDescription}>
+                <Text style={styles.resultTitle}>{coinResult}</Text>                <Text style={styles.resultDescription}>
                   {coinResult === 'Se dice' 
-                    ? '🍻 Cualquiera puede tomar para saber la pregunta'
-                    : `🎯 Solo ${selectedForSecret.join(' y ')} pueden tomar para saberla`
+                    ? 'Cualquiera puede tomar para saber la pregunta'
+                    : `Solo ${selectedForSecret.join(' y ')} pueden tomar para saberla`
                   }
                 </Text>
               </View>
@@ -227,63 +220,22 @@ export default function MonedaScreen() {
               )}
 
               {coinResult === 'Callar' && selectedForSecret.length > 0 && (
-                <View style={styles.secretCard}>
-                  <Text style={styles.secretText}>
-                    🎲 Jugadores elegidos al azar para conocer el secreto
+                <View style={styles.secretCard}>                  <Text style={styles.secretText}>
+                    Jugadores elegidos al azar para conocer el secreto
                   </Text>
                 </View>
-              )}
-
-              <View style={styles.buttonGroup}>
-                <Text style={styles.helpText}>
+              )}              <View style={styles.buttonGroup}>                <Text style={styles.helpText}>
                   {coinResult === 'Se dice' 
-                    ? 'Los que quieran saber toman ahora 🍻'
-                    : 'Solo los elegidos pueden tomar para saber 🤫'
+                    ? 'Los que quieran saber toman ahora'
+                    : 'Solo los elegidos pueden tomar para saber'
                   }
                 </Text>
                 
-                <TouchableOpacity onPress={handleShowSecret} style={styles.warningButton}>
-                  <Text style={styles.warningButtonText}>Los que tomaron conocen la pregunta</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity onPress={resetGame} style={styles.secondaryButton}>
-                  <Text style={styles.secondaryButtonText}>Siguiente Ronda</Text>
+                <TouchableOpacity onPress={resetGame} style={styles.primaryButton}>
+                  <Text style={styles.primaryButtonText}>Siguiente Ronda</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          )}
-
-          {showingSecret && (
-            <View style={styles.centerContent}>
-              <Text style={styles.secretTitle}>🔓 Momento de la Verdad</Text>
-                <View style={styles.secretRevealCard}>
-                <FontAwesome5 name="comment" size={40} color="#fbbf24" />
-                <Text style={styles.secretRevealText}>
-                  <Text style={styles.playerHighlight}>{emisor}</Text>
-                  <Text> ahora debe revelar la pregunta que le hizo a </Text>
-                  <Text style={styles.playerHighlight}>{encuestado}</Text>
-                </Text>
-                
-                <View style={styles.secretInstructions}>
-                  <Text style={styles.secretInstructionTitle}>🗣️ {emisor}, di la pregunta en voz alta</Text>
-                  <Text style={styles.secretInstructionText}>
-                    Solo quienes tomaron tienen derecho a escucharla
-                  </Text>
-                </View>
-                
-                {coinResult === 'Callar' && (
-                  <View style={styles.reminderCard}>
-                    <Text style={styles.reminderText}>
-                      🤫 Recuerden: solo {selectedForSecret.join(' y ')} podían tomar
-                    </Text>
-                  </View>
-                )}
-              </View>
-              
-              <Text style={styles.countdownText}>Nueva ronda en unos segundos...</Text>
-            </View>
-          )}
-        </View>
+            </View>          )}        </View>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -295,7 +247,8 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-  },  header: {
+  },
+  header: {
     padding: 16,
     paddingTop: 12,
     paddingBottom: 8,
@@ -309,13 +262,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#fff',
+    color: AppColors.textWhite,
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
   resetButton: {
-    backgroundColor: 'rgba(239, 68, 68, 0.9)',
+    backgroundColor: AppColors.error,
     padding: 8,
     borderRadius: 8,
     shadowColor: '#000',
@@ -331,24 +284,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   emisorBadge: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: AppColors.moneda,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   encuestadoBadge: {
-    backgroundColor: '#10b981',
+    backgroundColor: AppColors.success,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   secretBadge: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: AppColors.warning,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  badgeText: {    color: '#fff',
+  badgeText: {
+    color: AppColors.textWhite,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -366,7 +320,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 80,
     height: 80,
-    backgroundColor: '#475569',
+    backgroundColor: AppColors.container,
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
@@ -375,18 +329,18 @@ const styles = StyleSheet.create({
   mainTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#fff',
+    color: AppColors.textWhite,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#cbd5e1',
+    color: AppColors.textGray,
     textAlign: 'center',
     marginBottom: 30,
   },
   instructionCard: {
-    backgroundColor: '#334155',
+    backgroundColor: AppColors.container,
     padding: 20,
     borderRadius: 16,
     alignItems: 'center',
@@ -396,34 +350,34 @@ const styles = StyleSheet.create({
   },
   instructionText: {
     fontSize: 16,
-    color: '#e2e8f0',
+    color: AppColors.textWhite,
     textAlign: 'center',
     lineHeight: 22,
   },
   playerHighlight: {
-    color: '#60a5fa',
+    color: AppColors.monedaLight,
     fontWeight: '700',
   },
   helpText: {
     fontSize: 14,
-    color: '#94a3b8',
+    color: AppColors.textGray,
     textAlign: 'center',
     marginBottom: 20,
   },
   textInput: {
-    backgroundColor: '#1e293b',
+    backgroundColor: AppColors.backgroundDarker,
     borderWidth: 1,
-    borderColor: '#475569',
+    borderColor: AppColors.container,
     borderRadius: 8,
     padding: 12,
-    color: '#fff',
+    color: AppColors.textWhite,
     fontSize: 14,
     width: '100%',
     minHeight: 60,
     textAlignVertical: 'top',
   },
   primaryButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: AppColors.moneda,
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
@@ -434,19 +388,19 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: AppColors.textWhite,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
   },
   secondaryButton: {
-    backgroundColor: '#64748b',
+    backgroundColor: AppColors.containerLight,
     paddingHorizontal: 28,
     paddingVertical: 12,
     borderRadius: 10,
   },
   secondaryButtonText: {
-    color: '#fff',
+    color: AppColors.textWhite,
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
@@ -457,7 +411,7 @@ const styles = StyleSheet.create({
   coin: {
     width: 120,
     height: 120,
-    backgroundColor: '#fbbf24',
+    backgroundColor: AppColors.warning,
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -470,7 +424,7 @@ const styles = StyleSheet.create({
   coinText: {
     fontSize: 32,
     fontWeight: '900',
-    color: '#fff',
+    color: AppColors.textWhite,
   },
   resultCard: {
     padding: 24,
@@ -486,25 +440,25 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   resultPositive: {
-    backgroundColor: '#10b981',
+    backgroundColor: AppColors.success,
   },
   resultNegative: {
-    backgroundColor: '#ef4444',
+    backgroundColor: AppColors.error,
   },
   resultTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#fff',
+    color: AppColors.textWhite,
     textAlign: 'center',
   },
   resultDescription: {
     fontSize: 16,
-    color: '#f1f5f9',
+    color: AppColors.textWhite,
     textAlign: 'center',
     lineHeight: 22,
   },
   answerCard: {
-    backgroundColor: '#334155',
+    backgroundColor: AppColors.container,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
@@ -512,17 +466,17 @@ const styles = StyleSheet.create({
   },
   answerLabel: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: AppColors.textGray,
     fontWeight: '600',
     marginBottom: 4,
   },
   answerText: {
     fontSize: 16,
-    color: '#fff',
+    color: AppColors.textWhite,
     fontStyle: 'italic',
   },
   secretCard: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: AppColors.warning,
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
@@ -530,7 +484,7 @@ const styles = StyleSheet.create({
   },
   secretText: {
     fontSize: 14,
-    color: '#fff',
+    color: AppColors.textWhite,
     textAlign: 'center',
     fontWeight: '600',
   },
@@ -538,75 +492,5 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 12,
     alignItems: 'center',
-  },
-  warningButton: {
-    backgroundColor: '#f59e0b',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
-  warningButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  secretTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#fbbf24',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  secretRevealCard: {
-    backgroundColor: '#334155',
-    padding: 24,
-    borderRadius: 16,
-    alignItems: 'center',
-    marginBottom: 20,
-    width: '100%',
-    gap: 16,
-  },
-  secretRevealText: {
-    fontSize: 16,
-    color: '#e2e8f0',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  secretInstructions: {
-    backgroundColor: '#1e293b',
-    padding: 16,
-    borderRadius: 12,
-    width: '100%',
-    gap: 8,
-  },
-  secretInstructionTitle: {
-    fontSize: 16,
-    color: '#fbbf24',
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  secretInstructionText: {
-    fontSize: 14,
-    color: '#94a3b8',
-    textAlign: 'center',
-  },
-  reminderCard: {
-    backgroundColor: '#7c3aed',
-    padding: 12,
-    borderRadius: 8,
-    width: '100%',
-  },
-  reminderText: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  countdownText: {
-    fontSize: 14,
-    color: '#94a3b8',
-    textAlign: 'center',
-    marginTop: 16,
   },
 });

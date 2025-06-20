@@ -1,85 +1,78 @@
 import { Stack } from 'expo-router';
 import { PlayersProvider } from '../context/PlayersContext';
+import { AppColors } from '../constants/Colors';
 
 export default function RootLayout() {
   return (
     <PlayersProvider>
-      <Stack>
-      <Stack.Screen 
+      <Stack>      <Stack.Screen 
         name="index" 
         options={{ 
-          title: 'Toma o Toma',
-          headerStyle: {
-            backgroundColor: '#4facfe',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          headerShown: false, // Ocultar header para usar uno personalizado
         }} 
-      />
-      <Stack.Screen 
+      />      <Stack.Screen 
         name="game-selection" 
         options={{ 
           title: 'Seleccionar Juego',
           headerStyle: {
-            backgroundColor: '#ff7f50',
+            backgroundColor: '#e94560',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
         }} 
-      />
-      <Stack.Screen 
+      />      <Stack.Screen 
         name="ruleta" 
         options={{ 
-          title: 'Ruleta',
+          title: 'Ruleta de Jugadores',
           headerStyle: {
-            backgroundColor: '#4caf50',
+            backgroundColor: '#e94560',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
         }} 
-      />
-      <Stack.Screen 
+      /><Stack.Screen 
         name="temporizador" 
         options={{ 
           title: 'Temporizador',
           headerStyle: {
-            backgroundColor: '#2196f3',
+            backgroundColor: '#00d2ff',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
         }} 
-      />
-      <Stack.Screen 
+      />      <Stack.Screen 
         name="moneda" 
         options={{ 
-          title: 'Moneda',
+          title: 'Se dice o Callar',
           headerStyle: {
-            backgroundColor: '#ff9800',
+            backgroundColor: AppColors.moneda,
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
         }} 
-      />
-      <Stack.Screen 
+      /><Stack.Screen 
         name="cartas" 
         options={{ 
           title: 'Tome y Sufra',
           headerStyle: {
-            backgroundColor: '#f44336',
+            backgroundColor: '#764ba2',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
+            fontSize: 18,
           },
         }}      />
     </Stack>

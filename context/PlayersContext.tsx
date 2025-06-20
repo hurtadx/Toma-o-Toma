@@ -4,6 +4,7 @@ interface PlayersContextType {
   players: string[];
   setPlayers: (players: string[]) => void;
   addPlayer: (player: string) => void;
+  removePlayer: (index: number) => void;
   clearPlayers: () => void;
 }
 
@@ -11,11 +12,14 @@ const PlayersContext = createContext<PlayersContextType | undefined>(undefined);
 
 export function PlayersProvider({ children }: { children: ReactNode }) {
   const [players, setPlayers] = useState<string[]>([]);
-
   const addPlayer = (player: string) => {
     if (player.trim() !== '') {
       setPlayers(prev => [...prev, player.trim()]);
     }
+  };
+
+  const removePlayer = (index: number) => {
+    setPlayers(prev => prev.filter((_, i) => i !== index));
   };
 
   const clearPlayers = () => {
@@ -23,7 +27,7 @@ export function PlayersProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <PlayersContext.Provider value={{ players, setPlayers, addPlayer, clearPlayers }}>
+    <PlayersContext.Provider value={{ players, setPlayers, addPlayer, removePlayer, clearPlayers }}>
       {children}
     </PlayersContext.Provider>
   );

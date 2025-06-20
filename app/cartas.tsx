@@ -15,7 +15,7 @@ import { usePlayers } from '../context/PlayersContext';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-type CardType = 'pena_normal' | 'pena_fuerte' | 'beneficio' | 'evento';
+type CardType = 'pena_normal' | 'pena_fuerte' | 'beneficio' | 'evento' | 'verdad';
 
 interface Card {
   id: number;
@@ -36,41 +36,161 @@ const cardData = {
       "Imita a alguien del grupo, deben adivinar quién es, si no, toma 2 tragos",
       "Toma sin usar las manos",
       "quitate una prenda de ropa, si no puedes, toma 3 tragos",
-      "",
+      "darle un baile erotico a la persona que caiga en la ruleta",
       "Haz mímica hasta que adivinen la película",
-      "menciona quien crees que es el que mejor da sexo oral del grupo",
+      "menciona quien crees que es la persona que mejor da sexo oral del grupo",
+      "Entra a una red social y recrea la historia de una persona aleatoria",
+      "sube una historia publica pidiendo sexo",
+      "Escribele a un random de internet te extraño",
+      "sin poder hablar a tu posicion favorita",
+      "actua una escena de pelicula para adultos con la persona que caiga en la ruleta",
+      "habla solo en preguntas por 8 turnos, si fallas, toma 2 tragos",
+      "Habla como un comentarista deportivo por 5 turnos, si fallas, toma 2 tragos",
+      "Actúa como si fueras un terapeuta analizando a cada persona",
+      "Toma un shot",
+      "Toma shot",
+      "rueda la ruleta y cambia de vestimenta con esa persona",
+      "Confiesa qué miembro del grupo te parece más atractivo sexualmente",
+      "Revela si has masturbado pensando en alguien presente",
+      "baila bachata con la persona que caiga en la ruleta",
+      "tira 3 veces la ruleta y haz un matar, casar y coger"
+
     ],
     fuerte: [
-      "Muestra tu galería de fotos por 30 segundos",
-      "Escríbele a tu ex",
-      "Llama a tu mamá y dile que la amas",
-      "Confiesa tu crush actual",
-      "Haz una llamada perdida a un contacto random",
-      "Lee tu último mensaje de WhatsApp en voz alta",
-      "Publica una foto rara en tu historia",
-      "Cuenta tu secreto más vergonzoso",
-      "Llama a una drogueria y di que estas esperando los condones de hello kitty que pediste"
+      "Muestra tu galería de fotos oculta por 4 segundos, si no, toma 4 tragos",
+      "Escríbele a tu ex o exligue y dile que lo extrañas",
+      "Llama a tu mamá y dile que la amas 🥺",
+      "Llama a una drogueria y di que estas esperando los condones de hello kitty que pediste",
+      "quitale las medias al que caiga en la ruleta CON LA BOCA"
     ]
-  },
-  beneficio: [
-    "Anula la próxima pena que te toque",
-    "Haz que otro jugador tome tu lugar",
-    "Todos los demás toman",
-    "Elige a quien le toca el próximo turno",
-    "Inmunidad total en la próxima ronda",
-    "Intercambia tu turno con quien quieras",
+  },  beneficio: [
+    "¡Felicidades! No haces nada en este turno",
+    "Todos los demás toman 1 trago",
+    "Elige a alguien para que tome 2 tragos",
+    "Puedes solo agua en lugar de alcohol por 2 turnos",
+    "Todos toman menos tú",
+    "Elige a 2 personas para que tomen",
+    "No tomas alcohol por los próximos 2 turnos",
     "Reparte 3 tragos entre otros jugadores",
-    "Salta tu próximo turno"
-  ],
-  evento: [
+    "Los demás hacen 10 flexiones, tú descansas"
+  ],  evento: [
     "¡Toma o Toma , todos los jugadores beben un trago!",
-    "Cambien de lugares todos",
-    "Por los siguientes 3 turnos no pueden hablar, solo gestos, el que falle toma shot",
-    "Todos deben contar hasta 20 juntos",
-    "Baile grupal obligatorio",
+    "Por los siguientes 4 turnos no pueden hablar, solo gestos, el que falle toma shot",
+    "Baile grupal obligatorio, si jugador no lo hace, se quita una prenda",
     "Todos muestran su foto más reciente",
-    "El más joven toma doble",
-    "El más viejo cuenta una historia"
+    "El más joven toma una doble",
+    "El más viejo toma una doble",
+    "Tiran ruleta dos veces, los elegidos deberan hacer un combate de freestyle",
+    "¿Quién es más probable que se olvide su propio cumpleaños? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que mande mensaje al ex borracho? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se quede dormido en una cita? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que gaste todo su sueldo en un día? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se pierda en su propia ciudad? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que tenga más de 10 ex? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que mienta sobre su edad? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se haga el enfermo para no trabajar? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que stalkee a su ex en redes sociales? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que llore viendo una película? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se coma la comida de otros? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine en la cárcel? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea influencer? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que tenga más aplicaciones de citas? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que mienta en su perfil de citas? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se case primero? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que tenga más hijos? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se vuelva millonario? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que olvide nombres constantemente? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine siendo profesor? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que tenga una crisis de mediana edad? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea el más dramático? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea adicto a las redes sociales? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine viviendo con sus padres a los 40? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se tatúe el nombre de su pareja? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine en un reality show? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea el más celoso en una relación? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine siendo vegano? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que adopte 10 gatos? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea el más tacaño? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que se vuelva famoso en TikTok? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine siendo stripper? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que mienta sobre su número de parejas sexuales? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que tenga una aventura extramatrimonial? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que sea el peor en la cama? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que termine siendo sugar baby? El que señalen más toma 2 tragos",
+    "¿Quién es más probable que haga sexting con chatgpt? El que señalen más toma 2 tragos",
+    "¿Quién es mas probable que se coma con una persona casada? El que señalen más toma 2 tragos",  
+    "Quien es mas probaabke que vuelva con su ex",
+    "Todos hacen una confesión sexual al mismo tiempo, el más aburrido toma",    "Todos dicen cuál es su fetiche más raro (sin detalles)",
+    "Todos intercambian una prenda de ropa con alguien",
+    "¿Quién hace popó más veces al día? El que señalen más toma 2 tragos",
+    "¿Quién tarda más tiempo en el baño? El que señalen más toma 2 tragos",
+    "¿Quién ronca más fuerte? El que señalen más toma 2 tragos",
+
+    "¿Quién come más rápido? El que señalen más toma 2 tragos",
+    "¿Quién gasta más dinero en comida chatarra? El que señalen más toma 2 tragos",
+    "¿Quién ve más porno? El que señalen más toma 2 tragos",
+    "¿Quién se masturba más seguido? El que señalen más toma 2 tragos",
+    "¿Quién tiene el cuarto más desordenado? El que señalen más toma 2 tragos",
+    "¿Quién miente más seguido? El que señalen más toma 2 tragos",
+    "¿Quién es más dramático cuando está enfermo? El que señalen más toma 2 tragos",
+    "¿Quién llora más viendo películas? El que señalen más toma 2 tragos",
+    "¿Quién tiene más miedo a las arañas? El que señalen más toma 2 tragos",
+    "¿Quién habla más durante las películas? El que señalen más toma 2 tragos",
+    "¿Quién toma más fotos de su comida? El que señalen más toma 2 tragos",
+    "¿Quién revisa más su teléfono por día? El que señalen más toma 2 tragos",
+    "¿Quién tiene más conversaciones imaginarias? El que señalen más toma 2 tragos",
+    "¿Quién canta más en la ducha? El que señalen más toma 2 tragos",
+    "¿Quién baila más cuando está solo? El que señalen más toma 2 tragos",
+    "¿Quién procrastina más? El que señalen más toma 2 tragos",
+    "¿Quién ve más series de Netflix? El que señalen más toma 2 tragos",
+    "¿Quién duerme más horas? El que señalen más toma 2 tragos",
+    "¿Quién se levanta más tarde? El que señalen más toma 2 tragos",
+    "¿Quién tiene más apps de delivery? El que señalen más toma 2 tragos",
+    "¿Quién stalkeó más a su ex? El que señalen más toma 2 tragos",
+    "¿Quién tiene más fotos de sí mismo en su galería? El que señalen más toma 2 tragos",
+    "¿Quién usa más filtros en sus fotos? El que señalen más toma 2 tragos",
+    "¿Quién manda más memes por día? El que señalen más toma 2 tragos",
+    "¿Quién tiene más contactos bloqueados? El que señalen más toma 2 tragos",
+    "¿Quién borra más mensajes después de enviarlos? El que señalen más toma 2 tragos",
+    "¿Quién cambia más de outfit antes de salir? El que señalen más toma 2 tragos",    "¿Quién se arrepiente más de sus decisiones? El que señalen más toma 2 tragos"
+
+  ],
+  verdad: [
+    "Si tuvieras que coger disfrazado, ¿qué te pondrías?",
+    "Muestra una foto de una persona con la que tendrías sexo (no del grupo, ni conocidos, ni famosos)",
+    "¿Cuál es tu mayor fantasía sexual que nunca has confesado?",
+    "¿Con qué tipo de persona nunca tendrías sexo?",
+    "¿Cuál es el lugar más raro donde has pensado en tener sexo?",
+    "¿Qué es lo más vergonzoso que has hecho por conseguir sexo?",
+    "¿Cuál es tu posición sexual favorita y por qué?",
+    "¿Has tenido sueños eróticos con alguien presente? (sin decir quién)",
+    "¿Cuál es tu fetiche más secreto?",
+    "¿Qué mentira has dicho más veces en tu vida?",
+    "¿Cuál es tu mayor inseguridad que nadie conoce?",
+    "¿Qué harías si supieras que el mundo se acaba mañana?",
+    "¿Cuál es el secreto más oscuro que guardas?",
+    "¿A quién odias en secreto y por qué?",
+    "¿Cuál es tu mayor arrepentimiento en la vida?",
+    "¿Qué es lo más loco que has hecho por amor?",
+    "¿Cuánto dinero necesitarías para traicionar a tu mejor amigo?",
+    "¿Cuál es tu miedo más irracional?",
+    "¿Qué piensas realmente sobre cada persona de este grupo?",
+    "¿Cuál es la mentira más grande que has dicho a tus padres?",
+    "¿Has robado algo? ¿Qué fue?",
+    "¿Cuál es tu adicción secreta?",
+    "¿Qué es lo más cruel que has hecho a alguien?",
+    "¿Has estado enamorado de alguien que no debías?",
+    "¿Cuál es tu mayor hipocresía?",
+    "¿Qué secreto te llevarías a la tumba?",
+    "¿Has fingido un orgasmo? ¿Por qué?",
+    "¿Cuál es tu mayor culpa o remordimiento?",
+    "¿Qué harías por un millón de pesos que normalmente no harías?",
+    "¿Has tenido pensamientos sobre dejar todo y comenzar una nueva vida?",
+    "¿Cuál es tu mayor prejuicio que no admites públicamente?",
+    "¿Qué es lo más patético que has hecho por atención?",
+    "¿Has deseado que algo malo le pase a alguien?",
+    "¿Cuál es tu peor hábito que escondes de otros?",
+    "¿Qué mentira sobre ti mismo repites más frecuentemente?"
   ]
 };
 
@@ -79,24 +199,28 @@ const generateRandomCard = (): Card => {
   let cardType: CardType, content: string, extremo = false;
   let id = Math.floor(Math.random() * 1000);
 
-  if (rand < 0.5) {
-    // 50% Pena
-    if (Math.random() < 0.2) {
-      // 10% Pena Fuerte
+  if (rand < 0.3) {
+    // 30% Pena
+    if (Math.random() < 0.25) {
+      // 7.5% Pena Fuerte
       cardType = 'pena_fuerte';
       content = cardData.pena.fuerte[Math.floor(Math.random() * cardData.pena.fuerte.length)];
-      extremo = Math.random() < 0.5; // 50% chance de ser extremo
+      extremo = Math.random() < 0.5;
     } else {
-      // 40% Pena Normal
+      // 22.5% Pena Normal
       cardType = 'pena_normal';
       content = cardData.pena.normal[Math.floor(Math.random() * cardData.pena.normal.length)];
     }
-  } else if (rand < 0.75) {
-    // 25% Beneficio
+  } else if (rand < 0.4) {
+    // 10% Beneficio
     cardType = 'beneficio';
     content = cardData.beneficio[Math.floor(Math.random() * cardData.beneficio.length)];
+  } else if (rand < 0.65) {
+    // 25% Verdad
+    cardType = 'verdad';
+    content = cardData.verdad[Math.floor(Math.random() * cardData.verdad.length)];
   } else {
-    // 25% Evento
+    // 35% Evento
     cardType = 'evento';
     content = cardData.evento[Math.floor(Math.random() * cardData.evento.length)];
   }
@@ -106,8 +230,7 @@ const generateRandomCard = (): Card => {
 
 export default function CartasScreen() {
   const router = useRouter();
-  const { players } = usePlayers();
-  const [currentTurn, setCurrentTurn] = useState(0);
+  const { players, currentTurn, setCurrentTurn, resetTurn } = usePlayers();
   const [gameState, setGameState] = useState<'waiting' | 'revealing' | 'action'>('waiting');
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
   const [usedCards, setUsedCards] = useState<Card[]>([]);
@@ -144,10 +267,9 @@ export default function CartasScreen() {
       setIsAnimating(false);
       setGameState('action');
     }, 1500);
-  };
-
-  const handleNextTurn = () => {
-    setCurrentTurn(prev => (prev + 1) % players.length);
+  };  const handleNextTurn = () => {
+    const newTurn = (currentTurn + 1) % players.length;
+    setCurrentTurn(newTurn); // Ahora se guarda automáticamente en el contexto
     setGameState('waiting');
     setCurrentCard(null);
     
@@ -155,16 +277,14 @@ export default function CartasScreen() {
     flipAnimation.setValue(0);
     cardAnimation.setValue(0);
   };
-
   const resetGame = () => {
     setUsedCards([]);
     setCurrentCard(null);
-    setCurrentTurn(0);
+    resetTurn(); // Usar la función del contexto
     setGameState('waiting');
     flipAnimation.setValue(0);
     cardAnimation.setValue(0);
   };
-
   const getCardStyle = (tipo: CardType) => {
     switch (tipo) {
       case 'pena_normal':
@@ -175,11 +295,12 @@ export default function CartasScreen() {
         return styles.beneficioCard;
       case 'evento':
         return styles.eventoCard;
+      case 'verdad':
+        return styles.verdadCard;
       default:
         return styles.defaultCard;
     }
   };
-
   const getCardTypeText = (tipo: CardType) => {
     switch (tipo) {
       case 'pena_normal':
@@ -190,6 +311,8 @@ export default function CartasScreen() {
         return 'BENEFICIO';
       case 'evento':
         return 'EVENTO GRUPAL';
+      case 'verdad':
+        return 'VERDAD';
       default:
         return 'CARTA';
     }
@@ -618,10 +741,13 @@ const styles = StyleSheet.create({
   beneficioCard: {
     backgroundColor: '#34c759',
     borderColor: '#248a3d',
-  },
-  eventoCard: {
+  },  eventoCard: {
     backgroundColor: '#007aff',
     borderColor: '#0051d5',
+  },
+  verdadCard: {
+    backgroundColor: '#9d4edd',
+    borderColor: '#7209b7',
   },
   defaultCard: {
     backgroundColor: AppColors.container,

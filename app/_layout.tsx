@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
-import { PlayersProvider } from '../context/PlayersContext';
 import { AppColors } from '../constants/Colors';
+import { PlayersProvider } from '../context/PlayersContext';
 
 export default function RootLayout() {
   return (

@@ -31,7 +31,7 @@ export default function GameSelectionScreen() {
           <FontAwesome5 name="arrow-left" size={20} color={AppColors.textWhite} />
           <Text style={styles.backButtonText}>Volver</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>🎮 Seleccionar Juego</Text>
+        <Text style={styles.headerTitle}>Seleccionar Juego</Text>
       </View>
 
       <ScrollView 

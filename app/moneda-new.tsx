@@ -1,8 +1,8 @@
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import { Animated, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { usePlayers } from '../context/PlayersContext';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 
 export default function MonedaScreen() {
   const { players } = usePlayers();

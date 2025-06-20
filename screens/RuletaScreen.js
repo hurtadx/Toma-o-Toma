@@ -1,6 +1,5 @@
-import { View } from 'react-native';
 import { useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RuletaScreen({ route }) {
   const { players } = route.params;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Animated, TouchableOpacity, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const cartas = [
   { tipo: 'Pena', texto: 'Toma 2 shots extra.' },

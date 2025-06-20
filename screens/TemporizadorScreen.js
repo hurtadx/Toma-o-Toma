@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Animated } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function TemporizadorScreen() {
   const [seconds, setSeconds] = useState('');
